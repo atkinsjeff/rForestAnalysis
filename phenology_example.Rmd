@@ -1,0 +1,74 @@
+---
+title: "Phenology in R"
+author: "Atkins, Stovall, and Silva"
+date: "5/11/2020"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Phenology in R with phenocamr
+
+`phenocamr` version 1.1.4 is availble on CRAN <https://cran.r-project.org/web/packages/phenocamr/index.html> with a development version availble on GitHUB <https://github.com/khufkens/phenocamr>. A more in-depth tutorial is availble via the National Ecological Observatory Network's (NEON) Data Tutorial Series <https://www.neonscience.org/phenocam-phenor-modeling>. Note, this tutorial also includes information on additional data packages, including some not availble currently on CRAN. 
+
+Here we show how to analyze phenocam data, taken from the PhenoCAM network <https://phenocam.sr.unh.edu/webcam/> for the `Pace` site, a mixed-temperate site located in the central Virgina Piedmont of the US. 
+
+### Installation of phenocamr
+
+```{r install}
+# install the package if not already installed and call it via library()
+if(!require(phenocamr)){install.packages("phenocamr")}
+library(phenocamr)
+
+```
+
+Working with `phenocamr` is fairly straight-forward. Data from a site can be imported using the `download_phenocam` function which asks for:
+- `site` 
+- `veg_type` 
+- `frequency` a smoothing window, we are using 3-days, 
+- `phenophase` which when true, creates a seperate file that calculates phenological transition dates. 
+- `out_dir` the directory where you want your data saved.
+
+```{r create.folders}
+
+
+download_phenocam(site = "pace",
+                  veg_type = "DB",
+                  frequency = 3,
+                  phenophase = TRUE,
+                  out_dir = "./data/phenology")
+```
+
+Data can then be read in via the `read.table` function:
+
+```{r read.data}
+# load the time series data
+td <- read.table("./data/phenology/pace_DB_1000_3day_transition_dates.csv", header = TRUE, sep = ",")
+
+df
+
+# read in time series data
+df <- read.table("./data/phenology/pace_DB_1000_3day.csv",
+                 header = TRUE,
+                 sep = ",")
+```
+
+Plots can then be made in base R with transitional dates overlain: 
+```{r plotting}
+# select the rising (spring dates) for 25% threshold of Gcc 90
+td <- td[td$direction == "rising" & td$gcc_value == "gcc_90",]
+
+# create a simple line graph of the smooth Green Chromatic Coordinate (Gcc)
+# and add points for transition dates
+plot(as.Date(df$date), df$smooth_gcc_90, type = "l", xlab = "Date",
+     ylab = "Gcc (90th percentile)")
+points(x = as.Date(td$transition_25, origin = "1970-01-01"),
+       y = td$threshold_25,
+       pch = 19,
+       col = "red")
+```
