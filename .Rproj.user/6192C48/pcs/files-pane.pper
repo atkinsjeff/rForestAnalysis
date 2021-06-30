@@ -1,9 +1,9 @@
 {
-    "path" : "C:/github/rforestanalysis",
-    "sortOrder" : [
+    "path": "C:/github/rforestanalysis",
+    "sortOrder": [
         {
-            "ascending" : true,
-            "columnIndex" : 2
+            "ascending": true,
+            "columnIndex": 2
         }
     ]
 }

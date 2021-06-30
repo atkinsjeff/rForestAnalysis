@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 `phenocamr` version 1.1.4 is availble on CRAN <https://cran.r-project.org/web/packages/phenocamr/index.html> with a development version availble on GitHUB <https://github.com/khufkens/phenocamr>. A more in-depth tutorial is availble via the National Ecological Observatory Network's (NEON) Data Tutorial Series <https://www.neonscience.org/phenocam-phenor-modeling>. Note, this tutorial also includes information on additional data packages, including some not availble currently on CRAN. 
 
-Here we show how to analyze phenocam data, taken from the PhenoCAM network <https://phenocam.sr.unh.edu/webcam/> for the `Pace` site, a mixed-temperate site located in the central Virgina Piedmont of the US. 
+Here we show how to analyze phenocam data, taken from the PhenoCAM network <https://phenocam.sr.unh.edu/webcam/> for the `Pace` site, a mixed-temperate site located in the central Virginia Piedmont of the US. 
 
 ### Installation of phenocamr
 
@@ -31,7 +31,7 @@ Working with `phenocamr` is fairly straight-forward. Data from a site can be imp
 - `site` 
 - `veg_type` 
 - `frequency` a smoothing window, we are using 3-days, 
-- `phenophase` which when true, creates a seperate file that calculates phenological transition dates. 
+- `phenophase` which when true, creates a separate file that calculates phenological transition dates. 
 - `out_dir` the directory where you want your data saved.
 
 ```{r create.folders}

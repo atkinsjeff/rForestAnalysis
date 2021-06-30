@@ -1,0 +1,101 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+---
+title: "Dendrochronolgy in R"
+author: "Jeff Atkins"
+date: ' r format(Sys.time(), "%B %d, %Y)
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+  ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Working with ring-width data
+
+`dplR` version 1.7.2 is available on CRAN 
+
+Here we show how to import tree-ring data.  
+
+We are using data downloaded from the NOAA XXXX, specifically the Cook - Kelsey Tract TSCA-ITRDB NC005  [url - https://www.ncdc.noaa.gov/paleo-search/study/2987?siteId=15463]
+
+
+
+### Installation of dplR
+
+```{r install}
+# install the package if not already installed and call it via library()
+if(!require(dplR)){install.packages("dplR")}
+library(dplR)
+library(tidyverse)
+
+```
+## Importing ring-width data
+
+The vignette included with dplR provides a thorough walkthrough (https://cran.r-project.org/web/packages/dplR/vignettes/intro-dplR.pdf) here we show some highlights based on the independet dataset we have downloaded.
+
+
+
+```{r pressure, echo=FALSE}
+# the primary function in dplR is read.rwl()
+rw <- dplR::read.rwl("./data/dendro/nc005.rwl")
+
+# lets look at the dimension of our dataset
+dim(rw)   # 424 years and 31 series
+
+# and you can see that the data are both class "rw" and "data.frame"
+class(rw)
+
+```
+
+## Data descriptions
+
+`dplR` has a function, `rw.report()` that provides a fairly detailed description of the data set(s) you are working with. 
+
+```{r describe, echo=FALSE}
+# make our report
+rwl.report(rw)
+
+```
+## Plotting data (Spaghetti Plots)
+
+We can now plot these data.
+
+```{r plotting, echo=FALSE}
+
+plot(rw, plot.type="spag")
+
+```
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+## Detrending
+```{r detrend}
+## Detrending example, albeit brief.
+rw.detrend <- detrend(rwl = rw, method = "ModNegExp", verbose = TRUE)
+
+# we can look at the col names of the new object
+names(rw.detrend)
+
+# and we can look at the means of those indviduals
+colMeans(rw.detrend, na.rm=TRUE)
+
+```
+
+## Building a Chronology
+
+A chronology can be built from the detrended data. 
+
+```{r chrono}
+rw.crn <- chron(rw.detrend, prefix = "CAM")
+
+# now we can plot these data
+plot(rw.crn, add.spline=TRUE, nyrs=20)
+
+```

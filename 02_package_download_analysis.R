@@ -1,8 +1,9 @@
-library("ggplot2")
-library("dlstats")
+library(ggplot2)
+library(dlstats)
 require(tidyverse)
 require(ggrepel)
-
+# displays as you require
+require(scales)
 # import cran stats
 x <- cran_stats(c("forestinventory",
                   "ForestGapR",
@@ -22,6 +23,7 @@ x <- cran_stats(c("forestinventory",
                   "ForestTools",
                   "FI",
                   "forestSAS",
+                  "ForestFit",
                   "measuRing",
                   "detrendeR",
                   "burnr",
@@ -77,7 +79,23 @@ ggplot(x.sums, aes(x = days.on.cran, y = total.downloads, label = package))+
   stat_smooth(method = "lm")+
   theme_minimal()+
   geom_label_repel(min.segment.length = unit(0, 'lines'),
-                   nudge_y = 6)+
+                   nudge_y = 6, max.overlaps = 30)+
+  scale_y_continuous(labels = comma)+
+  ylab("Total Downloads")+
+  xlab("Days on CRAN")
+
+# remove phenopix
+x.sums %>%
+  filter(package != "phenopix" & package != "lidR") -> x.sums2
+
+x11(width = 12, height = 8)
+ggplot(x.sums2, aes(x = days.on.cran, y = total.downloads, label = package))+
+  geom_point()+
+  stat_smooth(method = "lm")+
+  theme_minimal()+
+  geom_label_repel(min.segment.length = unit(0, 'lines'),
+                   nudge_y = 6, max.overlaps = 30)+
+  scale_y_continuous(labels = comma)+
   ylab("Total Downloads")+
   xlab("Days on CRAN")
 

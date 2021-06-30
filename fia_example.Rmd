@@ -1,0 +1,102 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+---
+title: "FIA example in R"
+author: "Jeff Atkins"
+date: ' r format(Sys.time(), "%B %d, %Y)
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Installation of rFIA
+
+```{r install}
+# install the package if not already installed and call it via library()
+if(!require(rFIA)){install.packages("rFIA")}
+library(rFIA)
+library(tidyverse)
+library(sf)
+
+```
+## Getting started with rFIA
+
+Please visit https://rfia.netlify.app/tutorial/downloading/ for a full run down on how to do this. Here, we work through their example using FIA data from the state of Virginia. 
+
+You can also embed plots, for example:
+
+
+
+```{r pressure, eval = FALSE}
+## Download the state subset or Connecticut (requires an internet connection)
+## Save as an object to automatically load the data into your current R session!
+getFIA(states = 'VA', dir = './data/fia/')
+
+## Get the forest type and forest type group reference tables
+ref <- getFIA(states = 'ref', tables = c('FOREST_TYPE', 'FOREST_TYPE_GROUP'))
+
+```
+
+
+```{r read-FIA, echo=FALSE}
+## But using the 'states' argument we can select individual states (or groups)
+va <- readFIA(dir = './data/fia', states = 'VA')
+
+
+# how many unique trees
+va.tree <- tpa(va, grpBy = TREE)
+
+va.tree <- tpa(va, byPlot = TRUE)
+
+```
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+```{r data-time}
+
+
+## Check spatial coverage of plots held in the database
+plotFIA(va, plot.title = "FIA plot distribution, Virginia, USA" )
+
+```
+
+
+
+```{r clipping}
+## let's make a bounding box
+snp <- st_read("./data/fia/SNP_boundary/shen_PkBndryPly.shp")
+
+## Most Recent Subset (2017)
+snp.clip <- clipFIA(va, mask = snp) 
+
+
+# let's look at some basic population estimates
+tpaSNP <- tpa(snp.clip)
+```
+
+
+```{r by-plot}
+# we can also analyze by plot
+## Plot-level
+snp_plot <- tpa(snp.clip, byPlot = TRUE)
+
+## or by tree
+## Plot-level
+snp_plot_tree <- tpa(snp.clip, byPlot = TRUE, grpBy = TREE)
+
+## Size class
+## Group estimates by size class
+snp_sizeClass <- tpa(snp.clip, bySizeClass = TRUE)
+
+## Using our estimates from above (all inventory years in RI)
+plotFIA(snp_sizeClass, y = BAA, x = sizeClass, plot.title = 'Size class distribution of trees in SNP')
+```

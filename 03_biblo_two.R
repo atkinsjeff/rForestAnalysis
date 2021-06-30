@@ -1,5 +1,5 @@
 # importing journal title
-filenames <- list.files(path = "./data", pattern = "journal", full.names = TRUE) 
+filenames <- list.files(path = "./data", pattern = "_journal_", full.names = TRUE) 
 l <- lapply(filenames, fread, select = c("Source Titles", "records"), sep = "\t", nrows = 50)
 
 names(l) <- basename(filenames)
@@ -61,8 +61,8 @@ big.boi <- merge(df.sums, totals)
 big.boi$propR <- big.boi$sum.recs / big.boi$records
 
 
-x11(width = 8, height = 3)
-ggplot(big.boi, aes(x = year, y = propR, color = class))+
+x11(width = 6, height = 6)
+ggplot(big.boi, aes(x = year, y = (propR * 100), color = class))+
   geom_line(size = 2, alpha = 0.6)+
   geom_point(size = 3, shape = 21, fill = "white")+
   theme_minimal()+
@@ -73,8 +73,9 @@ ggplot(big.boi, aes(x = year, y = propR, color = class))+
     values = c(
       "ecology" = "#e41a1c",
       "forestry" ="#377eb8"))+
+  theme(legend.position=c(0.02,1), legend.justification=c(0.02,1))+
   xlab("")+
-  ylab(expression(atop("Citations of the R Programming Language", paste("in the top 20 journals of each field (%)"))))
+  ylab(expression(atop("Percentage of papers citing R ", paste("in the top 20 journals of each field"))))
   
 
 

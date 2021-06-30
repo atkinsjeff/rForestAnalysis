@@ -6,7 +6,7 @@ require(data.table)
 
 
 # importing journal title
-filenames <- list.files(path = "./data", pattern = "journal", full.names = TRUE) 
+filenames <- list.files(path = "./data", pattern = "_journal_", full.names = TRUE) 
 l <- lapply(filenames, fread, select = c("Source Titles", "records"), sep = "\t", nrows = 40)
 
 names(l) <- basename(filenames)
